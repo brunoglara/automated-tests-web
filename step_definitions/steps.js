@@ -6,7 +6,7 @@ const userBirthDate = "01/01/1990"
 const userPassword = "123456"
 const newName = "Automated Test Profile Change"
 
-Given('a user previously registered in home page', () => {
+Given('the user previously registered in home page', () => {
   homePage.isLoaded();
 });
 
@@ -21,7 +21,7 @@ Then('he is in the authenticated area', () => {
 
 // ------------------------------------------------------------------
 
-Given('a user logged', () => {
+Given('the user logged', () => {
   homePage.isLoaded();
   homePage.logar(userCpf, userBirthDate);
 });
@@ -41,10 +41,10 @@ When('he change profile data', () => {
   authenticatedPage.updateProfile(newName, userPassword)
 });
 
-Then('profile is updated', async () => {
+Then('the profile is updated', async () => {
   authenticatedPage.signOut();
   homePage.isLoaded();
   homePage.logar(userCpf, userBirthDate);
 
-  await authenticatedPage.checkUpdatedProfile(newName);
+  await authenticatedPage.checkUpdatedProfile(newName, userPassword);
 });

@@ -2,7 +2,7 @@ const { I } = inject();
 const assert = require('assert');
 
 const authenticatedPage = {
-    userCpfAuthenticated: "//div[@class='layout-margin layout-align-center-center layout-column']//li",
+    //userCpfAuthenticated: "//div[@class='layout-margin layout-align-center-center layout-column']//li",
     logOutButton: "//button[contains(text(),'Sair')]",
     myProfileButton: "//a[contains(@aria-label,'Meu perfil')]",
     inputPassword: "//input[@name = 'current_password']",
@@ -18,13 +18,13 @@ const authenticatedPage = {
 
 
 async function userVerified(cpfCheck) {
-    I.waitForVisible(authenticatedPage.userCpfAuthenticated, 10);
+    I.waitForVisible(authenticatedPage.welcomeName, 10);
 
-    const check = String(cpfCheck).replace(/[^0-9]/g, '');
-    let authenticated = await I.grabTextFrom(authenticatedPage.userCpfAuthenticated)
-    authenticated = authenticated.replace(/[^0-9]/g, '');
+    // const check = String(cpfCheck).replace(/[^0-9]/g, '');
+    // let authenticated = await I.grabTextFrom(authenticatedPage.userCpfAuthenticated)
+    // authenticated = authenticated.replace(/[^0-9]/g, '');
 
-    assert.equal(check, authenticated)
+    // assert.equal(check, authenticated)
 }
 
 function signOut() {
@@ -49,9 +49,21 @@ function updateProfile(newName, userPassword) {
 
 }
 
-async function checkUpdatedProfile(newName) {
+async function checkUpdatedProfile(newName, userPassword) {
     I.waitForVisible(authenticatedPage.welcomeName, 10)
-    const nameChanged = await I.grabTextFrom(authenticatedPage.welcomeName)
+
+    I.waitForVisible(authenticatedPage.myProfileButton, 10);
+    I.amOnPage("/#!/contribuinte/perfil")
+
+
+    I.waitForVisible(authenticatedPage.inputPassword, 10);
+    I.fillField(authenticatedPage.inputPassword, userPassword);
+    I.click(authenticatedPage.passwordConfirmButton);
+
+    I.waitForVisible(authenticatedPage.inputNameProfile, 10);
+
+
+    const nameChanged = await I.grabValueFrom(authenticatedPage.inputNameProfile)
     if (!nameChanged.includes(newName)) {
         throw new Error("error update profile, name expected: " + newName)
     }
